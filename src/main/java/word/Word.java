@@ -40,5 +40,4 @@ public class Word {
         builder.append(" ").append(word).append(" ").append(meaning);
         return builder.toString();
     }
-
 }

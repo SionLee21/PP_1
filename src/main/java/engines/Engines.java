@@ -40,7 +40,6 @@ public class Engines implements iEngine {
         Scanner scanner = new Scanner(System.in);
         System.out.print("수정할 단어 입력: ");
         String modifyWord = scanner.nextLine();
-
         // 수정할 단어가 단어장에 있는지 확인
         if (wordsMap.containsKey(modifyWord)) {
             System.out.print("새로운 뜻 입력: ");
