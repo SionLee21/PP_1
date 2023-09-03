@@ -1,39 +1,39 @@
 package org.voca;
+import word.*;
 import java.util.Scanner;
-
+import java.util.List;
+import engines.*;
 public class Voca implements iVoca{
     Scanner scanner = new Scanner(System.in);
+    Engines myEngine = new Engines();
     public static void main(String[] args) {
         Voca myVoca = new Voca();
         myVoca.run();
     }
     public void run() {
+        System.out.println("*** 영단어 마스터 ***");
         while (true) {
             switch (displayMenu()) {
                 case 1:
-                    voca.displayAllWords();
+                    displayAllWords();
                     break;
                 case 2:
-                    System.out.print("난이도(1,2,3): ");
-                    int difficulty = scanner.nextInt();
-                    dictionary.displayWordsByDifficulty(difficulty);
+                    displayWordsByDifficulty();
                     break;
                 case 3:
-                    System.out.print("단어 검색: ");
-                    String searchWord = scanner.nextLine();
-                    String meaning = dictionary.searchWord(searchWord);
-                    System.out.println(meaning);
+                    searchWord();
                     break;
                 case 4:
-                    System.out.print("난이도(1,2,3) & 새 단어 입력: ");
-                    int newDifficulty = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline character
-                    System.out.print("새 단어 입력: ");
-                    String newWord = scanner.nextLine();
-                    System.out.print("뜻 입력: ");
-                    String newMeaning = scanner.nextLine();
-                    dictionary.addWord(newDifficulty, newWord, newMeaning);
+                    myEngine.addWord();
                     break;
+                case 0:
+                    System.out.println("프로그램 종료! 다음에 만나요~");
+                    scanner.close();
+                    System.exit(0);
+                default:
+                    System.out.println("유효하지 않은 메뉴 선택입니다.");
+            }
+                    /*
                 case 5:
                     System.out.print("수정할 단어 입력: ");
                     String wordToModify = scanner.nextLine();
@@ -49,21 +49,16 @@ public class Voca implements iVoca{
                 case 7:
                     dictionary.saveToFile();
                     break;
-                case 0:
-                    System.out.println("프로그램 종료! 다음에 만나요~");
-                    scanner.close();
-                    System.exit(0);
-                default:
-                    System.out.println("유효하지 않은 메뉴 선택입니다.");
+
+
+                     */
             }
         }
-    }
 
     @Override
     public int displayMenu() {
-        System.out.println(
-                "*** 영단어 마스터 ***\n" +
-                "********************\n" +
+        System.out.print(
+                "\n********************\n" +
                 "1. 모든 단어 보기\n" +
                 "2. 수준별 단어 보기\n" +
                 "3. 단어 검색\n" +
@@ -81,92 +76,76 @@ public class Voca implements iVoca{
 
     @Override
     public void displayAllWords() {
+        List<Word> words = myEngine.getWords(); // Engines 클래스의 getWords() 메서드로 단어 목록 가져오기
+        if (words.isEmpty()) {
+            System.out.println("입력된 단어가 없습니다.");
+        } else {
+            System.out.println("--------------------------------");
+            for (Word word : words) {
+                System.out.println(word);
+            }
+            System.out.println("--------------------------------");
+        }
+    }
+
+
+    @Override
+    public void displayWordsByDifficulty() {
+        int difficultyFilter;
+
+        // 유효한 난이도가 입력될 때까지 대기
+        while (true) {
+            System.out.print("난이도(1, 2, 3): ");
+            difficultyFilter = scanner.nextInt();
+
+            if (difficultyFilter == 1 || difficultyFilter == 2 || difficultyFilter == 3) {
+                break; // 유효한 난이도가 입력되면 루프 종료
+            } else {
+                System.out.println("유효하지 않은 입력입니다. 다시 입력하세요.");
+                scanner.nextLine(); // 잘못된 입력 값을 스캔하고 버림
+            }
+        }
+
+        List<Word> words = myEngine.getWords();
+        boolean foundWords = false; // 해당 난이도의 단어를 찾았는지 여부를 나타내는 변수
+
         System.out.println("--------------------------------");
         for (Word word : words) {
-            System.out.println(word);
+            if (word.getDifficulty() == difficultyFilter) {
+                System.out.println(word);
+                foundWords = true;
+            }
+        }
+
+        if (!foundWords) {
+            System.out.println("해당 난이도의 단어가 없습니다.");
         }
         System.out.println("--------------------------------");
     }
-/*
     @Override
-    public void displayWordsByDifficulty(int difficulty) {
+    public void searchWord() {
+        System.out.print("단어 검색: ");
+        String searchWord = scanner.nextLine();
 
-    }
+        List<Word> words = myEngine.getWords();
+        boolean foundWord = false; // 검색된 단어를 찾았는지 여부를 나타내는 변수
 
-    @Override
-    public String searchWord(String word) {
-        return null;
-    }
-
-    @Override
-    public void modifyWord(String word, String newMeaning) {
-
-    }
-
-    @Override
-    public void deleteWord(String word) {
-
-    }
-
-    @Override
-    public void saveToFile() {
-
-    }
-
-    @Override
-    public void exit() {
-
-    }
-}
-
+        System.out.println("--------------------------------");
+        for (Word word : words) {
+            if (word.getWord().equalsIgnoreCase(searchWord)) {
+                System.out.println(word.getWord() + ": " + word.getMeaning());
+                foundWord = true;
+            }
         }
+
+        if (!foundWord) {
+            System.out.println("해당 단어를 찾을 수 없습니다.");
+        }
+
+        System.out.println("--------------------------------");
     }
 
-    @Override
-    public void displayMenu() {
 
-    }
-
-    @Override
-    public void addWord(int difficulty, String word, String meaning) {
-
-    }
-
-    @Override
-    public void displayAllWords() {
-
-    }
-
-    @Override
-    public void displayWordsByDifficulty(int difficulty) {
-
-    }
-
-    @Override
-    public String searchWord(String word) {
-        return null;
-    }
-
-    @Override
-    public void modifyWord(String word, String newMeaning) {
-
-    }
-
-    @Override
-    public void deleteWord(String word) {
-
-    }
-
-    @Override
-    public void saveToFile() {
-
-    }
-
-    @Override
-    public void exit() {
-
-    }
-    */
 }
 
 
