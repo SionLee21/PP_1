@@ -1,8 +1,8 @@
 package org.voca;
 
 public interface iVoca {
-    void displayMenu();
-    void addWord(int difficulty, String word, String meaning);
+    int displayMenu();
+/*
     void displayAllWords();
     void displayWordsByDifficulty(int difficulty);
     String searchWord(String word);
@@ -10,4 +10,6 @@ public interface iVoca {
     void deleteWord(String word);
     void saveToFile();
     void exit();
+
+     */
 }
