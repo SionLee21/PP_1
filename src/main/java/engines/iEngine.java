@@ -1,16 +1,12 @@
 package engines;
-import java.util.List;
+import java.util.Map;
 import word.*;
+
 public interface iEngine {
     void addWord();
-    List<Word> getWords();
-
-    /*
-    void modifyWord(String word, String newMeaning);
-    void deleteWord(String word);
+    void modifyWord();
+    void deleteWord();
     void saveToFile();
-    void exit();
-
-
-     */
+    Map<String, Word> getWordsMap();
 }
+

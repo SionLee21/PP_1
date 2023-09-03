@@ -5,8 +5,6 @@ public class Word {
     private String word;
     private String meaning;
 
-
-
     public Word(int difficulty, String word, String meaning) {
         this.difficulty = difficulty;
         this.word = word;
