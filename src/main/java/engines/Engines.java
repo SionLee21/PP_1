@@ -1,13 +1,7 @@
 package engines;
 import word.*;
-import java.util.ArrayList;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.Scanner;
-import java.util.List;
+import java.io.*;
 import java.util.*;
-import word.*;
 
 public class Engines implements iEngine {
     Map<String, Word> wordsMap; // 단어를 이름(단어)으로 관리하기 위한 Map
