@@ -1,6 +1,5 @@
 package org.voca;
 import word.Word;
-import java.util.Scanner;
 import java.util.*;
 import engines.*;
 
