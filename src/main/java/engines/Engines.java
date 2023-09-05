@@ -21,8 +21,8 @@ public class Engines implements iEngine {
         Scanner scanner = new Scanner(System.in);
         System.out.print("난이도(1,2,3) & 새 단어 입력: ");
         int newDifficulty = scanner.nextInt();
+        String newWord = scanner.next();
         scanner.nextLine(); // 개행문자 제거
-        String newWord = scanner.nextLine();
         System.out.print("뜻 입력: ");
         String newMeaning = scanner.nextLine();
         // 이미 단어가 있는지 확인하고, 중복된 단어는 추가하지 않음
