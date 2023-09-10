@@ -1,9 +1,8 @@
 package org.voca;
 import word.Word;
-import java.util.Scanner;
 import java.util.*;
-import engines.*;
-
+import engines.* ;
+import java.io.FileReader;
 public class Voca implements iVoca {
     Scanner scanner = new Scanner(System.in);
     Engines myEngine = new Engines();
@@ -14,6 +13,7 @@ public class Voca implements iVoca {
     }
 
     public void run() {
+        myEngine.loadFile();
         System.out.println("*** 영단어 마스터 ***");
         while (true) {
             switch (displayMenu()) {
@@ -47,6 +47,8 @@ public class Voca implements iVoca {
             }
         }
     }
+
+
 
     @Override
     public int displayMenu() {

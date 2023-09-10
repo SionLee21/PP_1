@@ -1,16 +1,10 @@
 package engines;
 import word.*;
-import java.util.ArrayList;
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.Scanner;
-import java.util.List;
+import java.io.*;
 import java.util.*;
-import word.*;
 
 public class Engines implements iEngine {
-    Map<String, Word> wordsMap; // 단어를 이름(단어)으로 관리하기 위한 Map
+    Map<String, Word> wordsMap; // 단어를 이름으로 관리하기 위한 Map
 
     public Engines() {
         wordsMap = new HashMap<>(); // HashMap으로 초기화
@@ -66,6 +60,51 @@ public class Engines implements iEngine {
             System.out.println("단어장에 없는 단어입니다.");
         }
     }
+    @Override
+    public void loadFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("voca.txt"))) {
+            String line;
+            boolean isEmpty = true; // 파일이 비어있는지 여부를 나타내는 변수
+
+            while ((line = reader.readLine()) != null) {
+                // 각 줄을 공백을 기준으로 단어와 뜻으로 분리
+                String[] parts = line.split(" ", 3);
+
+                // 올바르게 분리되지 않으면 건너뜀
+                if (parts.length < 3) {
+                    continue;
+                }
+
+                int loadedDifficulty = Integer.parseInt(parts[0]);
+                String loadedWord = parts[1];
+                String loadedMeaning = parts[2];
+
+                // 별표를 제거
+                loadedWord = loadedWord.replaceAll("\\*", "");
+
+                // 이미 단어가 있는지 확인하고, 중복된 단어는 추가하지 않음
+                if (!wordsMap.containsKey(loadedWord)) {
+                    Word word = new Word(loadedDifficulty, loadedWord, loadedMeaning);
+                    wordsMap.put(loadedWord, word);
+                }
+
+                isEmpty = false; // 파일이 비어있지 않음을 표시
+            }
+
+            if (isEmpty) {
+                System.out.println("파일에 불러올 단어가 없습니다.");
+            } else {
+                System.out.println("파일에서 단어를 불러왔습니다.");
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("불러올 파일이 존재하지 않습니다.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("파일 불러오기 중 오류가 발생했습니다.");
+        }
+    }
+
+
 
     @Override
     public void saveToFile() {
