@@ -8,6 +8,7 @@ public class Engines implements iEngine {
 
     public Engines() {
         wordsMap = new HashMap<>(); // HashMap으로 초기화
+        loadFile();
     }
 
     @Override
@@ -32,38 +33,86 @@ public class Engines implements iEngine {
     @Override
     public void modifyWord() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("수정할 단어 입력: ");
-        String modifyWord = scanner.nextLine();
-        // 수정할 단어가 단어장에 있는지 확인
-        if (wordsMap.containsKey(modifyWord)) {
-            System.out.print("새로운 뜻 입력: ");
-            String newMeaning = scanner.nextLine();
-            Word word = wordsMap.get(modifyWord);
-            word.setMeaning(newMeaning);
-            System.out.println("\n단어가 수정되었습니다 !!!");
+        System.out.print("수정할 단어 검색: ");
+        String modifyWord = scanner.nextLine().toLowerCase();
+
+        List<Word> foundWords = new ArrayList<>();
+
+        System.out.println("--------------------------------");
+        int index = 1;
+        for (Word word : wordsMap.values()) {
+            if (word.getWord().toLowerCase().contains(modifyWord)) {
+                foundWords.add(word);
+                System.out.println(index + " " + word.getWord() + " " + word.getMeaning());
+                index++;
+            }
+        }
+
+        if (foundWords.isEmpty()) {
+            System.out.println("해당 단어를 찾을 수 없습니다.");
         } else {
-            System.out.println("단어장에 없는 단어입니다.");
+            System.out.print("수정할 번호 선택: ");
+            int selectedIndex = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            if (selectedIndex >= 1 && selectedIndex <= foundWords.size()) {
+                Word selectedWord = foundWords.get(selectedIndex - 1);
+                System.out.print("새로운 뜻 입력: ");
+                String newMeaning = scanner.nextLine();
+                selectedWord.setMeaning(newMeaning);
+                System.out.println("\n단어가 수정되었습니다 !!!");
+            } else {
+                System.out.println("유효하지 않은 번호입니다.");
+            }
         }
     }
 
     @Override
     public void deleteWord() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("삭제할 단어 입력: ");
-        String deleteWord = scanner.nextLine();
+        System.out.print("삭제할 단어 검색: ");
+        String deleteWord = scanner.nextLine().toLowerCase();
 
-        // 삭제할 단어가 단어장에 있는지 확인
-        if (wordsMap.containsKey(deleteWord)) {
-            wordsMap.remove(deleteWord);
-            System.out.println("\n단어가 삭제되었습니다 !!!");
+        List<Word> foundWords = new ArrayList<>();
+
+        System.out.println("--------------------------------");
+        int index = 1;
+        for (Word word : wordsMap.values()) {
+            if (word.getWord().toLowerCase().contains(deleteWord)) {
+                foundWords.add(word);
+                System.out.println(index + " " + word.getWord() + " " + word.getMeaning());
+                index++;
+            }
+        }
+
+        if (foundWords.isEmpty()) {
+            System.out.println("해당 단어를 찾을 수 없습니다.");
         } else {
-            System.out.println("단어장에 없는 단어입니다.");
+            System.out.print("=> 삭제할 번호 선택: ");
+            int selectedIndex = scanner.nextInt();
+            scanner.nextLine();
+            if (selectedIndex >= 1 && selectedIndex <= foundWords.size()) {
+                System.out.print("=> 정말로 삭제하실래요?(Y/n) ");
+                char tf = scanner.next().charAt(0);
+                if (tf == 'y' || tf == 'Y') {
+                    Word selectedWord = foundWords.get(selectedIndex - 1);
+                    wordsMap.remove(selectedWord.getWord());
+                    System.out.println("\n선택한 단어 삭제 완료 !!! ");
+                } else {
+                    System.out.println("삭제를 취소했습니다.");
+                }
+            } else {
+                System.out.println("유효하지 않은 번호입니다.");
+            }
         }
     }
+
+
+
     @Override
     public void loadFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader("voca.txt"))) {
             String line;
+            int count = 0;
             boolean isEmpty = true; // 파일이 비어있는지 여부를 나타내는 변수
 
             while ((line = reader.readLine()) != null) {
@@ -81,20 +130,19 @@ public class Engines implements iEngine {
 
                 // 별표를 제거
                 loadedWord = loadedWord.replaceAll("\\*", "");
+                Word word = new Word(loadedDifficulty, loadedWord, loadedMeaning);
+                wordsMap.put(loadedWord.trim(), word);
 
-                // 이미 단어가 있는지 확인하고, 중복된 단어는 추가하지 않음
-                if (!wordsMap.containsKey(loadedWord)) {
-                    Word word = new Word(loadedDifficulty, loadedWord, loadedMeaning);
-                    wordsMap.put(loadedWord, word);
-                }
-
+                count++;
                 isEmpty = false; // 파일이 비어있지 않음을 표시
+                System.out.println(count + loadedWord + loadedMeaning);
+
             }
 
             if (isEmpty) {
                 System.out.println("파일에 불러올 단어가 없습니다.");
             } else {
-                System.out.println("파일에서 단어를 불러왔습니다.");
+                System.out.println(count + "개 단어 로딩 완료!");
             }
         } catch (FileNotFoundException e) {
             System.out.println("불러올 파일이 존재하지 않습니다.");
@@ -106,18 +154,17 @@ public class Engines implements iEngine {
 
 
 
+
     @Override
     public void saveToFile() {
-        // 파일 저장 코드는 이전과 동일하게 사용 가능
-        // 단, 단어를 리스트 대신 Map에서 가져와야 함
         List<Word> words = new ArrayList<>(wordsMap.values());
 
         try (FileWriter fileWriter = new FileWriter("voca.txt");
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
 
             for (Word word : words) {
-                bufferedWriter.write(word.toString()); // 단어 객체를 문자열로 변환하여 파일에 쓰기
-                bufferedWriter.newLine(); // 새로운 줄로 이동
+                bufferedWriter.write(word.toString());
+                bufferedWriter.newLine();
             }
 
             System.out.println("파일에 저장되었습니다.");
