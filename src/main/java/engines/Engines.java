@@ -140,7 +140,7 @@ public class Engines implements iEngine {
             if (isEmpty) {
                 System.out.println("파일에 불러올 단어가 없습니다.");
             } else {
-                System.out.println(count + "개 단어 로딩 완료!");
+                System.out.println("=> " + count + "개 단어 로딩 완료!");
             }
         } catch (FileNotFoundException e) {
             System.out.println("불러올 파일이 존재하지 않습니다.");
