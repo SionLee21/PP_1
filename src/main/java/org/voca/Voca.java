@@ -13,7 +13,6 @@ public class Voca implements iVoca {
     }
 
     public void run() {
-        myEngine.loadFile();
         System.out.println("*** 영단어 마스터 ***");
         while (true) {
             switch (displayMenu()) {
@@ -86,7 +85,7 @@ public class Voca implements iVoca {
     public void displayWordsByDifficulty() {
         int difficultyFilter;
         while (true) {
-            System.out.print("난이도(1, 2, 3): ");
+            System.out.print("=> 레벨(1:초급, 2:중급, 3:고급) 선택 : ");
             difficultyFilter = scanner.nextInt();
 
             if (difficultyFilter == 1 || difficultyFilter == 2 || difficultyFilter == 3) {
@@ -124,9 +123,11 @@ public class Voca implements iVoca {
         boolean foundWord = false;
 
         System.out.println("--------------------------------");
+        int index = 1;
         for (Word word : wordsMap.values()) {
-            if (word.getWord().equalsIgnoreCase(searchWord)) {
-                System.out.println(word.getWord() + ": " + word.getMeaning());
+            if (word.getWord().toLowerCase().contains(searchWord.toLowerCase())) {
+                System.out.println(index + " " + word.getWord() + " " + word.getMeaning());
+                index++;
                 foundWord = true;
             }
         }
@@ -136,5 +137,6 @@ public class Voca implements iVoca {
         }
         System.out.println("--------------------------------");
     }
+
 }
 
