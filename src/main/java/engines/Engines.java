@@ -135,8 +135,6 @@ public class Engines implements iEngine {
 
                 count++;
                 isEmpty = false; // 파일이 비어있지 않음을 표시
-                System.out.println(count + loadedWord + loadedMeaning);
-
             }
 
             if (isEmpty) {
